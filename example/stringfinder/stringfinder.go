@@ -7,15 +7,16 @@ import (
 	"time"
 )
 
+var finalResult = "Gonetic Example"
+
 type StringChromosome struct {
 	Chr string
 }
 
 func (s StringChromosome) Fitness() float64 {
-	result := "Hello My name is Mohammad Jalili"
 	fitness := 0.0
 	for i := 0; i < len(s.Chr); i++ {
-		if s.Chr[i] == result[i] {
+		if s.Chr[i] == finalResult[i] {
 			fitness++
 		}
 	}
@@ -42,6 +43,10 @@ func (s StringChromosome) Mutate(mutationRate float64) gonetic.Chromosome {
 	return StringChromosome{Chr: mute}
 }
 
+func (s StringChromosome) Terminate() bool {
+	return s.Fitness() == float64(len(s.Chr))
+}
+
 // NewStringChromosome creates a new StringChromosome with random characters.
 func NewStringChromosome(length int) StringChromosome {
 	chars := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ,.!?1234567890"
@@ -63,19 +68,29 @@ func (sh StringHandler) InitializePopulation(size int) []gonetic.Chromosome {
 	}
 	return chrs
 }
+
+type StringLogger struct {
+}
+
 func main() {
 	rand.Seed(time.Now().UnixNano())
 	config := gonetic.GAConfig{
-		PopulationSize:  1000,
-		MaxIteration:    1000,
-		MutationPercent: 0.3,
+		PopulationSize:  100,
+		MaxIteration:    10000,
+		MutationPercent: 0.1,
 	}
 
-	prototype := NewStringChromosome(len("Hello My name is Mohammad Jalili"))
+	prototype := NewStringChromosome(len(finalResult))
 	stringHandler := StringHandler{
 		Prototype: prototype,
 	}
 	ga := gonetic.NewGeneticAlgorithm(stringHandler, config)
-	bestSolution := ga.Run()
+	bestSolution := ga.Run(func(generation int, chromosome gonetic.Chromosome) {
+		fmt.Println("Iteration : ", generation)
+		fmt.Println("Best Result : ", ga.Population[0])
+		fmt.Println("Best Result Fitness : ", ga.Population[0].Fitness())
+		fmt.Println()
+		fmt.Println()
+	})
 	fmt.Println("Best Solution:", bestSolution)
 }
