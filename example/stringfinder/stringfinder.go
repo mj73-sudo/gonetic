@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/mj73sudo/gonetic"
+	"github.com/mj73-sudo/gonetic"
 	"math/rand"
 	"time"
 )
