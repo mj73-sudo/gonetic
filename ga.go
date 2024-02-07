@@ -40,7 +40,7 @@ func NewGeneticAlgorithm(handler Handler, config GAConfig) *GeneticAlgorithm {
 func (ga *GeneticAlgorithm) Run(logger func(generation int, chromosome Chromosome)) Chromosome {
 	for generation := 0; generation < ga.Config.MaxIteration; generation++ {
 		// Select parents and create new population
-		newPopulation := make([]Chromosome, 0)
+		newPopulation := make([]Chromosome, len(ga.Population))
 		copy(newPopulation, ga.Population)
 		for i := 0; i < ga.Config.PopulationSize; i += 2 {
 			parent1, parent2 := ga.selectParents()
